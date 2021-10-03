@@ -1,4 +1,4 @@
-name: Build Windows Packages with smtubelib
+name: Build Windows with smtubelib
 
 on:
   workflow_dispatch:
@@ -14,7 +14,6 @@ jobs:
         run: svn co https://github.com/smplayer-dev/smplayer-build.git/trunk .
 
       - name: Install sources (normal)
-        if: ${{ matrix.config.portable == false }}
         uses: actions/checkout@v2
         with:
           path: packages/smplayer
@@ -32,7 +31,6 @@ jobs:
         run: .\uncompress_players.cmd
 
       - name: Install Qt (64 bit)
-        if: ${{ matrix.config.arch == 'x64' }}
         uses: jurplel/install-qt-action@v2
         with:
           version: '5.15.2'
@@ -40,7 +38,6 @@ jobs:
           #tools: 'tools_openssl_x64,1.1.1-1,qt.tools.openssl.win_x64'
 
       - name: Download QtWebkit (64 bit)
-        if: ${{ matrix.config.arch == 'x64' }}
         run: Invoke-WebRequest -Uri https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-5.212.0-alpha4/qtwebkit-Windows-Windows_10-Mingw73-Windows-Windows_10-X86_64.7z -OutFile qtwebkit.7z
 
       - name: Extract QtWebKit
@@ -57,7 +54,6 @@ jobs:
         run: .\install.cmd
 
       - name: Create installer
-        if: ${{ matrix.config.portable == false }}
         run: |
            .\nsis.cmd
            $filename = Get-Content packages\BUILD\installer_filename.txt -TotalCount 1
